@@ -15,11 +15,13 @@ getS3method("<S3_GENERIC>", "<CLASS>")
 
 The definitive reference is this classic R News article:
 
-Accessing the Sources
-Uwe Ligges
-<https://cran.r-project.org/doc/Rnews/Rnews_2006-4.pdf>
-Volume 6/4, October 2006.
-Go to page 43.
+> Accessing the Sources
+>
+> Uwe Ligges
+>
+> <https://cran.r-project.org/doc/Rnews/Rnews_2006-4.pdf>
+>
+> Volume 6/4, October 2006. Go to page 43.
 
 Another good reference is the help file for `method()`:
 
@@ -36,7 +38,7 @@ setNames
 #>     names(object) <- nm
 #>     object
 #> }
-#> <bytecode: 0x7fa8da3f0590>
+#> <bytecode: 0x7fd31b320098>
 #> <environment: namespace:stats>
 ```
 
@@ -46,14 +48,14 @@ But there are many ways this can fail.
 vector             # .Internal
 #> function (mode = "logical", length = 0L) 
 #> .Internal(vector(mode, length))
-#> <bytecode: 0x7fa8dbc63078>
+#> <bytecode: 0x7fd319a7a298>
 #> <environment: namespace:base>
 class              # .Primitive
 #> function (x)  .Primitive("class")
 subset             # S3 generic
 #> function (x, ...) 
 #> UseMethod("subset")
-#> <bytecode: 0x7fa8dc2af790>
+#> <bytecode: 0x7fd31c2c9b50>
 #> <environment: namespace:base>
 ```
 
@@ -67,7 +69,7 @@ These are characterized by `UseMethod()` in the printed result:
 subset
 #> function (x, ...) 
 #> UseMethod("subset")
-#> <bytecode: 0x7fa8dc2af790>
+#> <bytecode: 0x7fd31c2c9b50>
 #> <environment: namespace:base>
 ```
 
@@ -81,7 +83,7 @@ subset.default
 #>         stop("'subset' must be logical")
 #>     x[subset & !is.na(subset)]
 #> }
-#> <bytecode: 0x7fa8dbf49190>
+#> <bytecode: 0x7fd319676440>
 #> <environment: namespace:base>
 ```
 
@@ -112,7 +114,7 @@ subset.matrix
 #>         stop("'subset' must be logical")
 #>     x[subset & !is.na(subset), vars, drop = drop]
 #> }
-#> <bytecode: 0x7fa8da303238>
+#> <bytecode: 0x7fd318b20600>
 #> <environment: namespace:base>
 ```
 
@@ -151,7 +153,7 @@ getAnywhere(print.xgettext)
 #>     cat(x, sep = "\n")
 #>     invisible(x)
 #> }
-#> <bytecode: 0x7fa8dbb618b0>
+#> <bytecode: 0x7fd31a86fe00>
 #> <environment: namespace:tools>
 ```
 
@@ -164,7 +166,7 @@ tools:::print.xgettext
 #>     cat(x, sep = "\n")
 #>     invisible(x)
 #> }
-#> <bytecode: 0x7fa8dbb618b0>
+#> <bytecode: 0x7fd31a86fe00>
 #> <environment: namespace:tools>
 ```
 
@@ -182,7 +184,9 @@ You need to locate the source code of R or the associated add-on package on the 
 #### Download source of R itself:
 
 -   Download source for current release from <https://cran.r-project.org>, e.g. `R-3.2.2.tar.gz`, and unpack it.
-     tar xvf R-3.2.2.tar.gz
+
+        tar xvf R-3.2.2.tar.gz
+
 -   See more info there about getting the development version.
 -   Or checkout from the official Subversion repository <https://svn.r-project.org/R/>.
 
@@ -199,13 +203,13 @@ Example: I want the source for `levels<-`.
 #> function (x, value)  .Primitive("levels<-")
 ```
 
-Search for `levels<-` in `$R HOME/src/main/names.c` and we find [this line](`$R%20HOME/src/main/names.c`):
+Search for `levels<-` in [`$R HOME/src/main/names.c`](https://github.com/wch/r-source/blob/trunk/src/main/names.c) and we find [this line](https://github.com/wch/r-source/blob/3d8fc77d602f19c9722d8e13c1a1f5f69f42a5c4/src/main/names.c#L218):
 
 ``` c
 {"levels<-", do_levelsgets, 0, 1, 2, {PP_FUNCALL, PREC_LEFT, 1}}
 ```
 
-which tells we're looking for `do_levelsgets`. Now use your search capability (GitHub? `grep`?) to look for that within the files below `$R_HOME/src/`. I choose the [GitHub option](https://github.com/wch/r-source/search?utf8=✓&q=+do_levelsgets+path%3Asrc%2Fmain&type=Code) and use this query:
+which tells us we're looking for `do_levelsgets`. Now use your search capability (GitHub? `grep`?) to look for that within the files below `$R_HOME/src/`. I choose the [GitHub option](https://github.com/wch/r-source/search?utf8=✓&q=+do_levelsgets+path%3Asrc%2Fmain&type=Code) and use this query:
 
 ``` bash
  do_levelsgets path:src/main
@@ -223,16 +227,19 @@ And finally arrive at my destination: [lines 1242 through 1261 in `$R_HOME/src/m
 #### Download source of an add-on package:
 
 -   Visit the package on CRAN, e.g., <https://cran.r-project.org/web/packages/vegan/index.html>, download the `*.tar.gz` linked from "Package source", and unpack it.
-     tar xvf vegan\_2.3-1.tar.gz
+
+        tar xvf vegan_2.3-1.tar.gz
+
 -   If developed on GitHub, e.g., <https://github.com/vegandevs/vegan>, download via the "Download ZIP" button or Git clone it.
-     git clone <https://github.com/vegandevs/vegan.git>
+
+        git clone https://github.com/vegandevs/vegan.git
 
 #### How to find what you need in R package source:
 
 -   Look in the `src` directory. If you are lucky, there will be a file that obviously contains the function of interest.
 -   Otherwise, search with `grep`, your editor/IDE, or [GitHub queries](https://help.github.com/articles/searching-github/) and follow the trail to rainbow's end.
 
-Example: I want the source for `dplyr::bind_rows`.
+Example: I want the source for `dplyr::bind_rows`. `dplyr` is developed [on GitHub](https://github.com/hadley/dplyr).
 
 First I search within the `R` directory with [this GitHub search query](https://github.com/hadley/dplyr/search?utf8=✓&q=bind_rows+path%3AR):
 
@@ -240,7 +247,7 @@ First I search within the `R` directory with [this GitHub search query](https://
 bind_rows path:R
 ```
 
-GitHub search only shows you the first one or two matches within a file, but I gather that `R/bind.r` is where I want to look. I [visit it in the browser](https://github.com/hadley/dplyr/blob/master/R/bind.r) and use my browser to search for `bind_rows`, which reveals the [function definition](https://github.com/hadley/dplyr/blob/master/R/bind.r). That reveals I actually need `bind_rows_`.
+GitHub search only shows you the first one or two matches within a file, but I gather that [`R/bind.r`](https://github.com/hadley/dplyr/blob/master/R/bind.r) is where I want to look. I visit it in the browser and use the browser to search for `bind_rows`, which reveals the [function definition](https://github.com/hadley/dplyr/blob/969a3a8e2f1dea5802a1cb6c13e189691a0e206f/R/bind.r#L70-L81). That reveals I actually need `bind_rows_`.
 
 So I do another [GitHub search with this query](https://github.com/hadley/dplyr/search?utf8=✓&q=bind_rows_):
 
@@ -250,6 +257,7 @@ bind_rows_
 
 which reveals hits in
 
+    R/bind.r
     R/RcppExports.R
     src/bind.cpp
     src/RcppExports.cpp
@@ -269,4 +277,4 @@ And finally arrive at my destination: [lines 7 though 119 of `src/bind.cpp`](htt
 An incomplete list:
 
 -   S4
--   [R-Forge](https://r-forge.r-project.org)
+-   Other places to put code, e.g. [R-Forge](https://r-forge.r-project.org) or BitBucket
