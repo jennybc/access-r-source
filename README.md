@@ -1,3 +1,14 @@
+Accessing R Source
+================
+
+-   [TL;DR](#tldr)
+-   [References](#references)
+-   [Just print it](#just-print-it)
+-   [Function is an S3 generic](#function-is-an-s3-generic)
+-   [Compiled code](#compiled-code)
+
+*2017-07-31 update: Since I wrote this @jimhester has created the [lookup package](https://github.com/jimhester/lookup#readme) to automate this process. So if all you want is the result, just use that! If you want a bit more context, then keep reading. AFAIK this info is still fundamentally sound.*
+
 How to get at R source. I am sick of Googling this. I am writing it down this time.
 
 ### TL;DR
@@ -38,7 +49,7 @@ setNames
 #>     names(object) <- nm
 #>     object
 #> }
-#> <bytecode: 0x7fd31b320098>
+#> <bytecode: 0x7fce93c98920>
 #> <environment: namespace:stats>
 ```
 
@@ -48,14 +59,14 @@ But there are many ways this can fail.
 vector             # .Internal
 #> function (mode = "logical", length = 0L) 
 #> .Internal(vector(mode, length))
-#> <bytecode: 0x7fd319a7a298>
+#> <bytecode: 0x7fce94835c40>
 #> <environment: namespace:base>
 class              # .Primitive
 #> function (x)  .Primitive("class")
 subset             # S3 generic
 #> function (x, ...) 
 #> UseMethod("subset")
-#> <bytecode: 0x7fd31c2c9b50>
+#> <bytecode: 0x7fce933c0178>
 #> <environment: namespace:base>
 ```
 
@@ -69,7 +80,7 @@ These are characterized by `UseMethod()` in the printed result:
 subset
 #> function (x, ...) 
 #> UseMethod("subset")
-#> <bytecode: 0x7fd31c2c9b50>
+#> <bytecode: 0x7fce933c0178>
 #> <environment: namespace:base>
 ```
 
@@ -83,7 +94,7 @@ subset.default
 #>         stop("'subset' must be logical")
 #>     x[subset & !is.na(subset)]
 #> }
-#> <bytecode: 0x7fd319676440>
+#> <bytecode: 0x7fce935f1228>
 #> <environment: namespace:base>
 ```
 
@@ -114,7 +125,7 @@ subset.matrix
 #>         stop("'subset' must be logical")
 #>     x[subset & !is.na(subset), vars, drop = drop]
 #> }
-#> <bytecode: 0x7fd318b20600>
+#> <bytecode: 0x7fce93314388>
 #> <environment: namespace:base>
 ```
 
@@ -123,11 +134,11 @@ Sometimes the method definition is not exported from the package namespace. That
 ``` r
 mout <- capture.output(methods(print))
 tail(mout)
-#> [1] "[188] print.vignette*                              "
-#> [2] "[189] print.warnings                               "
-#> [3] "[190] print.xgettext*                              "
-#> [4] "[191] print.xngettext*                             "
-#> [5] "[192] print.xtabs*                                 "
+#> [1] "[195] print.vignette*                                   "
+#> [2] "[196] print.warnings                                    "
+#> [3] "[197] print.xgettext*                                   "
+#> [4] "[198] print.xngettext*                                  "
+#> [5] "[199] print.xtabs*                                      "
 #> [6] "see '?methods' for accessing help and source code"
 ```
 
@@ -153,7 +164,7 @@ getAnywhere(print.xgettext)
 #>     cat(x, sep = "\n")
 #>     invisible(x)
 #> }
-#> <bytecode: 0x7fd31a86fe00>
+#> <bytecode: 0x7fce9787e150>
 #> <environment: namespace:tools>
 ```
 
@@ -166,7 +177,7 @@ tools:::print.xgettext
 #>     cat(x, sep = "\n")
 #>     invisible(x)
 #> }
-#> <bytecode: 0x7fd31a86fe00>
+#> <bytecode: 0x7fce9787e150>
 #> <environment: namespace:tools>
 ```
 

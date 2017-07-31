@@ -1,10 +1,8 @@
 ---
 title: "Accessing R Source"
 output:
-#  html_document:
-#    keep_md: TRUE
-  md_document:
-    variant: markdown_github
+  github_document:
+    toc: true
 ---
 
 ```{r, echo = FALSE}
@@ -14,6 +12,8 @@ knitr::opts_chunk$set(
   fig.path = "README-"
 )
 ```
+
+*2017-07-31 update: Since I wrote this @jimhester has created the [lookup package](https://github.com/jimhester/lookup#readme) to automate this process. So if all you want is the result, just use that! If you want a bit more context, then keep reading. AFAIK this info is still fundamentally sound.*
 
 How to get at R source. I am sick of Googling this. I am writing it down this time.
 
