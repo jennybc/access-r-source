@@ -9,6 +9,7 @@ methods(<S3_GENERIC>)
 getAnywhere(<S3_GENERIC>.<CLASS>)
 getS3method("<S3_GENERIC>", "<CLASS>")
 <NAMESPACE>:::<S3_GENERIC>.<CLASS>
+pryr::show_c_source(.Primitive("class")) # compiled code
 ```
 
 ### References
@@ -192,9 +193,7 @@ You need to locate the source code of R or the associated add-on package on the 
 
 #### How to find what you need in the R source (paraphrasing Ligges, in places):
 
--   For R and standard R packages, look in subdirs of `$R_HOME/src/`, most especially `$R_HOME/src/main/`.
--   If calling R function is `.Primitive()` or `.Internal()`, find the entry point `$R HOME/src/main/names.c`. Then try to find that function. Example below.
--   Use the [GitHub search capabilities](https://help.github.com/articles/searching-github/).
+For quick results, try `pryr::show_c_source()` from the [`pryr`](https://cran.r-project.org/web/packages/pryr/index.html) package. It will open your default web browser and search the GitHub R source repo for the function's code.
 
 Example: I want the source for `levels<-`.
 
@@ -202,6 +201,22 @@ Example: I want the source for `levels<-`.
 `levels<-`    # .Primitive()
 #> function (x, value)  .Primitive("levels<-")
 ```
+
+Copy and paste the function body to `show_c_source()`
+
+``` r
+pryr::show_c_source(.Primitive("levels<-"))
+#> levels<- is implemented by do_levelsgets with op = 0
+#> Please visit https://github.com/search?q=SEXP%20attribute_hidden%20do_levelsgets+repo:wch/r-source&type=Code
+```
+
+Alternatively, by hand:
+
+-   For R and standard R packages, look in subdirs of `$R_HOME/src/`, most especially `$R_HOME/src/main/`.
+-   If calling R function is `.Primitive()` or `.Internal()`, find the entry point `$R HOME/src/main/names.c`. Then try to find that function. Example below.
+-   Use the [GitHub search capabilities](https://help.github.com/articles/searching-github/).
+
+Example (continued):
 
 Search for `levels<-` in [`$R HOME/src/main/names.c`](https://github.com/wch/r-source/blob/trunk/src/main/names.c) and we find [this line](https://github.com/wch/r-source/blob/3d8fc77d602f19c9722d8e13c1a1f5f69f42a5c4/src/main/names.c#L218):
 
